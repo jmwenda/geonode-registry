@@ -1,0 +1,11 @@
+===========================================
+This is a Django based application to be used to keep track
+of GeoNode Instance's registry. It will support both post and get requests to different GeoNode instances. This will be helpful in the event one has to
+maintain several GeoNode instances and their is need of a quick dashboard to get status on the different instances. The issues to look at here include:
+The GeoNode Version installed:
+The Number of Maps:
+The Number of Layers:
+Broken Layers:
+Broken Maps:
+Last Backup on the GeoNode
+===============================================
