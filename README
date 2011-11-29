@@ -11,5 +11,16 @@ maintain several GeoNode instances and their is need of a quick dashboard to get
      *Broken Maps:
      *Last Backup on the GeoNode
 ===============================================
-There is an itenerary of stuff that has to be looked at here. today i have just been scratching like
+Please ensure to change the settings file to have the variable
+
+GEONODE_REGISTRY_URL = 'http://localhost'
+
+and added it to the settings file registry
+and run syncdb
+
+Also ensure you have edited the urls.py file to have the following
+
+(r'^registry/',include('registry.urls')),
+
+
 
