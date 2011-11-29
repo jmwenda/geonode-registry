@@ -13,14 +13,16 @@ maintain several GeoNode instances and their is need of a quick dashboard to get
 ===============================================
 Please ensure to change the settings file to have the variable
 
-GEONODE_REGISTRY_URL = 'http://localhost'
 
-and added it to the settings file registry
+To install run the setup.py 
+add to the django installed settings 'registry',
 and run syncdb
 
-Also ensure you have edited the urls.py file to have the following
+Also ensure you have edited the main urls.py file to have the following
 
 (r'^registry/',include('registry.urls')),
+
+Restart the server to effect the changes
 
 
 
