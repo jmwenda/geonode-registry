@@ -7,7 +7,7 @@ from django.http import HttpResponse
 
 import simplejson as json
 
-from geonode.registry.models import GeoNode
+from registry.models import GeoNode
 
 @csrf_exempt
 def geonode(request, geonode_id=None):
