@@ -19,6 +19,7 @@ class GeoNode(models.Model):
     map_count = models.PositiveIntegerField(null=True, blank=True)
     faulty_layers = models.PositiveIntegerField(null=True,blank=True)
     faulty_maps = models.PositiveIntegerField(null=True,blank=True)
+    backup_date = models.DateTimeField(null=True, blank=True)
     last_update = models.DateTimeField(null=True, blank=True)
 
     class Meta:
@@ -43,6 +44,7 @@ class GeoNode(models.Model):
             self.map_count = int(data['map_count'])
             self.faulty_layers = int(data['badlayers'])
             self.faulty_maps = int(data['badmaps'])
+            self.backup_date = datetime.utcfromtimestamp(data['backupdate'])
             self.last_update = datetime.utcnow()
             self.save()
             return self
