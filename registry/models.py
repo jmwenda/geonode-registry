@@ -17,6 +17,8 @@ class GeoNode(models.Model):
     #area_of_interest = models.CharField(max_length=100, null=True, blank=True)
     layer_count = models.PositiveIntegerField(null=True, blank=True)
     map_count = models.PositiveIntegerField(null=True, blank=True)
+    faulty_layers = models.PositiveIntegerField(null=True,blank=True)
+    faulty_maps = models.PositiveIntegerField(null=True,blank=True)
     last_update = models.DateTimeField(null=True, blank=True)
 
     class Meta:
@@ -39,6 +41,8 @@ class GeoNode(models.Model):
             #self.area_of_interest = data['area_of_interest']
             self.layer_count = int(data['layer_count'])
             self.map_count = int(data['map_count'])
+            self.faulty_layers = int(data['badlayers'])
+            self.faulty_maps = int(data['badmaps'])
             self.last_update = datetime.utcnow()
             self.save()
             return self
