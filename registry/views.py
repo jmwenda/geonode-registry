@@ -7,15 +7,15 @@ from django.http import HttpResponse
 
 import simplejson as json
 
-from registry.models import GeoNodeInstance,GeoNodeStatus,GeoNode
+from registry.models import GeoNodeInstance,GeoNodeStatus
 
 @csrf_exempt
 def geonode(request, geonode_id=None):
     if(geonode_id != None and request.method == "GET"):
-        geonode = get_object_or_404(GeoNode, pk=geonode_id)
+        geonode = get_object_or_404(GeoNodeInstance, pk=geonode_id)
         return HttpResponse(serializers.serialize("json", [geonode]))
     elif(geonode_id == None and request.method == "GET"):
-        geonodes = GeoNode.objects.all()
+        geonodes = GeoNodeInstance.objects.all()
         return HttpResponse(serializers.serialize("json", geonodes))
     elif( request.method == "POST"):
         data = json.loads(request.raw_post_data)
@@ -28,11 +28,11 @@ def geonode(request, geonode_id=None):
         return HttpResponse(serializers.serialize("json", [status]))
     elif(geonode_id != None and request.method == "PUT"):
         data = json.loads(request.raw_post_data)
-        geonode = GeoNode.objects.get(pk=geonode_id)
+        geonode = GeoNodeInstance.objects.get(pk=geonode_id)
         geonode.from_json(data)
         return HttpResponse(serializers.serialize("json", [geonode]))
     elif(geonode_id != None and request.method == "DELETE"):
-        geonode = GeoNode.objects.get(pk=geonode_id)
+        geonode = GeoNodeInstance.objects.get(pk=geonode_id)
         geonode.delete()
         data = {'status': 'success', 'msg': 'geonode deleted'}
         return HttpResponse(json.dumps(data), mimetype='application/json')
