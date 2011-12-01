@@ -7,7 +7,7 @@ from django.http import HttpResponse
 
 import simplejson as json
 
-from registry.models import GeoNode
+from registry.models import GeoNodeInstance,GeoNodeStatus,GeoNode
 
 @csrf_exempt
 def geonode(request, geonode_id=None):
@@ -17,11 +17,15 @@ def geonode(request, geonode_id=None):
     elif(geonode_id == None and request.method == "GET"):
         geonodes = GeoNode.objects.all()
         return HttpResponse(serializers.serialize("json", geonodes))
-    elif(geonode_id == None and request.method == "POST"):
-        geonode = GeoNode()
+    elif( request.method == "POST"):
         data = json.loads(request.raw_post_data)
-        geonode.from_json(data)
-        return HttpResponse(serializers.serialize("json", [geonode]))
+        instance = GeoNodeInstance.objects.get(url=data['url'])
+        if instance is None:
+            geonodeinstance = GeoNodeInstance()
+            geonodeinstance.from_json(data)
+        status = GeoNodeStatus()
+        status.from_json(data)
+        return HttpResponse(serializers.serialize("json", [status]))
     elif(geonode_id != None and request.method == "PUT"):
         data = json.loads(request.raw_post_data)
         geonode = GeoNode.objects.get(pk=geonode_id)
