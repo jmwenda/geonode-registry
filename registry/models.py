@@ -6,7 +6,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 
 
-class GeoNodeInstances(models.Model):
+class GeoNodeInstance(models.Model):
     name = models.CharField(max_length=100)
     url = models.URLField(verify_exists=False, null=True, blank=True)
     geoserver_base_url = models.URLField(verify_exists=False, null=True, blank=True)
@@ -33,7 +33,7 @@ class GeoNodeInstances(models.Model):
             print sys.exc_info() 
             return None
 class GeoNodeStatus(models.Model):
-    instance = models.ForeignKey(GeoNodeInstances)
+    instance = models.ForeignKey(GeoNodeInstance)
     layer_count = models.PositiveIntegerField(null=True, blank=True)
     map_count = models.PositiveIntegerField(null=True, blank=True)                                                                                        
     faulty_layers = models.PositiveIntegerField(null=True,blank=True)
@@ -46,7 +46,7 @@ class GeoNodeStatus(models.Model):
         return self.instance
     def from_json(self,data):
         try:
-            self.instance = GeoNodeInstances.objects.get(url=data['url'])
+            self.instance = GeoNodeInstance.objects.get(url=data['url'])
             self.layer_count = int(data['layer_count'])
             self.map_count = int(data['map_count'])
             self.faulty_layers = int(data['badlayers'])
