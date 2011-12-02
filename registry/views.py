@@ -1,5 +1,5 @@
 # Create your views here.
-from registry.models import GeoNodeInstance
+from registry.models import GeoNodeInstance, GeoNodeStatus
 from django.http import HttpResponse, HttpResponseNotAllowed
 import simplejson as json
 import datetime
@@ -23,14 +23,12 @@ def geonode(request):
     instance_data = extract(['name', 'url', 'geoserver_base_url', 'geonetwork_base_url'], data)
     instance_data['created_at'] = right_now
     instance, created = GeoNodeInstance.objects.get_or_create(url=data['url'], defaults=instance_data)
-    GeoNodeInstance.objects.filter(url=data['url']).update(**instance_data)
+    GeoNodeInstance.objects.filter(id=instance.id).update(**instance_data)
 
-#            self.instance = GeoNodeInstance.objects.get(url=data['url'])
-#                        self.layer_count = int(data['layer_count'])
-#                        self.map_count = int(data['map_count'])
-#                        self.faulty_layers = int(data['badlayers'])
-#                        self.faulty_maps = int(data[' badmaps'])
-#                        self.backup_date = datetime.utcfromtimestamp(data['backupdate'])
-#                       self.created_at = datetime.utcnow()
+    status_data = extract(['map_count', 'layer_count', 'backup_date', 'faulty_layers', 'faulty_maps'], data)
+    status = GeoNodeStatus.objects.create(instance=instance)
+    status_data['created_at'] = right_now
+    GeoNodeStatus.objects.filter(id=status.id).update(**status_data)
 
-    return HttpResponse(instance.id)
+    output = {'instance': instance.id, 'status': status.id}
+    return HttpResponse(json.dumps(output))

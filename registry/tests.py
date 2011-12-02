@@ -1,9 +1,8 @@
-from registry.models import GeoNodeInstance
+from registry.models import GeoNodeInstance, GeoNodeStatus
 from registry.views import extract
 from django.test.client import Client
 from django.test import TestCase
 import json
-import datetime
 
 def new_instance(post_data):
     """Send the post_data to the view and check the returned instance
@@ -19,9 +18,13 @@ def new_instance(post_data):
            'the server returned a HTTP %s error.' % response.status_code)
     assert response.status_code == 200, msg
 
-    instance = GeoNodeInstance.objects.get()
+    data = json.loads(response.content)
+    msg = 'Expected for find instance in a JSON dict if operation is successful'
+    assert 'instance' in data, msg
 
-    assert instance.__unicode__() == post_data['name']
+    instance = GeoNodeInstance.objects.get(id=data['instance'])
+
+    assert instance.__unicode__() is not None
 
     instance_data = extract(['name', 'url', 'geoserver_base_url', 'geonetwork_base_url'], post_data)
 
@@ -30,7 +33,20 @@ def new_instance(post_data):
         msg = 'Expected "%s" but got "%s" for the "%s" attribute' % (value, actual_value, key)
         assert actual_value == value, msg
 
+    msg = 'Expected to find status in response'
+    assert 'status' in data,msg
 
+    status = GeoNodeStatus.objects.get(id=data['status'])
+    assert status.__unicode__() is not None
+
+    status_data = extract(['layer_count', 'map_count', 'faulty_maps', 'faulty_layers', 'backup_date'], post_data)
+ 
+    for key, value in status_data.items():
+        actual_value = getattr(status, key)
+        msg = 'Expected "%s" but got "%s" for the "%s" attribute' % (value, actual_value, key)
+        assert actual_value == value, msg
+
+    
 
 class TestRegistryViews(TestCase):
 
@@ -42,13 +58,13 @@ class TestRegistryViews(TestCase):
                       'geonetwork_base_url': 'http://demo.geonode.org/geonetwork',
                       'layer_count': 100,
                       'map_count': 10,
-                      'badlayers': 10,
-                      'badmaps': 1,
-                      'backupdate': None,
+                      'faulty_layers': 10,
+                      'faulty_maps': 1,
+                      'backup_date': None,
                       }
  
     def testNewInstance(self):
-        """Check a new instance is created correctly.
+        """Check a new instance and status are created correctly.
         """
         new_instance(self.post_data)
 
@@ -57,7 +73,7 @@ class TestRegistryViews(TestCase):
 
 
     def testInstanceCanBeRetreived(self):
-        """Check that the same instance is updated after a second request.
+        """Check that instance is not duplicated after a susequent request.
         """
         new_instance(self.post_data)
 
@@ -73,7 +89,7 @@ class TestRegistryViews(TestCase):
 
 
     def testGETisInvalid(self):
-        """Check GET requests are marked as invalid.
+        """Check GET requests are marked as not allowed.
         """
         c = Client()
         response = c.get('/registry/geonode/')

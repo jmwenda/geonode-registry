@@ -1,10 +1,4 @@
 from django.db import models
-from datetime import datetime
-import sys
-from geonode.maps.models import Map, Layer, MapLayer
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
-from django.contrib.auth.models import User
 
 
 class GeoNodeInstance(models.Model):
@@ -33,4 +27,4 @@ class GeoNodeStatus(models.Model):
     class Meta:
         verbose_name = "GeoNode's Status"
     def __unicode__(self):
-        return self.instance
+        return 'Status of %s at %s' % (self.instance, self.created_at)
