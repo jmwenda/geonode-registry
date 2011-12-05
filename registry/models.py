@@ -20,8 +20,8 @@ class GeoNodeStatus(models.Model):
     instance = models.ForeignKey(GeoNodeInstance)
     layer_count = models.PositiveIntegerField(null=True, blank=True)
     map_count = models.PositiveIntegerField(null=True, blank=True)                                                                                        
-    faulty_layers = models.PositiveIntegerField(null=True,blank=True)
-    faulty_maps = models.PositiveIntegerField(null=True,blank=True)
+    faulty_layers_count = models.PositiveIntegerField(null=True,blank=True)
+    faulty_maps_count = models.PositiveIntegerField(null=True,blank=True)
     backup_date = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(null=True,blank=True)
     class Meta:
