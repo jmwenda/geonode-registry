@@ -1,5 +1,5 @@
 # Create your views here.
-from registry.models import GeoNodeInstance, GeoNodeStatus
+from registry.models import GeoNodeInstance, GeoNodeStatus,FaultyLayer
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.views.decorators.csrf import csrf_exempt
 import simplejson as json
@@ -32,6 +32,19 @@ def geonode(request):
     # Convert backup date into a real date and replace it in the status_data dictionary.
     status_data['backup_date'] = datetime.datetime.fromtimestamp(status_data['backup_date'])
     GeoNodeStatus.objects.filter(id=status.id).update(**status_data)
+
+    layer_data = extract(['faulty_layers_status'],data)
+    #print layer_data
+    layer_details = {}
+    for layer in layer_data['faulty_layers_status']:
+        print layer
+        faulty_layer_details =  layer_data['faulty_layers_status'][layer]
+        layer_details['status'] = status
+        layer_details['name'] = faulty_layer_details[0]
+        layer_details['url'] = faulty_layer_details[1]
+        layer_details['reason'] = faulty_layer_details[2]
+        faulty_layer = FaultyLayer.objects.create(status=status)
+        FaultyLayer.objects.filter(id=faulty_layer.id).update(**layer_details) 
 
     output = {'instance': instance.id, 'status': status.id}
     return HttpResponse(json.dumps(output))

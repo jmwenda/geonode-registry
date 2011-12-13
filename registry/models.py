@@ -28,3 +28,10 @@ class GeoNodeStatus(models.Model):
         verbose_name = "GeoNode's Status"
     def __unicode__(self):
         return 'Status of %s at %s' % (self.instance, self.created_at)
+class FaultyLayer(models.Model):
+    status = models.ForeignKey(GeoNodeStatus)
+    name = models.CharField(max_length=100)
+    url = models.CharField(max_length=100)
+    reason = models.TextField(null=True,blank=True)
+    def __unicode__(self):
+        return 'Faulty Layers %s at %s' % (self.name,self.status)
