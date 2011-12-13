@@ -2,7 +2,7 @@
 from registry.models import GeoNodeInstance, GeoNodeStatus,FaultyLayer
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.views.decorators.csrf import csrf_exempt
-import simplejson as json
+from django.utils import simplejson as json
 import datetime
 
 # Function to extract a subset of a dictionary. Found at:
