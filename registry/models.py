@@ -14,7 +14,12 @@ class GeoNodeInstance(models.Model):
     
     def __unicode__(self):
         return self.name
-
+class GeoNodeFailure(models.Model):
+    instance = models.ForeignKey(GeoNodeInstance)
+    code = models.CharField(max_length=100)
+    url = models.URLField(verify_exists=False, null=True, blank=True)
+    mapscode = models.CharField(max_length=100)
+    datacode = models.CharField(max_length=100)
 
 class GeoNodeStatus(models.Model):
     instance = models.ForeignKey(GeoNodeInstance)
